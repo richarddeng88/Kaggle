@@ -1,7 +1,6 @@
 library(readr)
 library(xgboost)
 
-
 train <- train[ which(train$open=='1'),]
 train <- train[ which(train$sales!='0'),]
 
@@ -38,6 +37,8 @@ RMPSE<- function(preds, dtrain) {
     err <- sqrt(mean((epreds/elab-1)^2))
     return(list(metric = "RMPSE", value = err))
 }
+
+
 
 
 
