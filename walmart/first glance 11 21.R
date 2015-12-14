@@ -1,6 +1,7 @@
 train <- read.csv("data/walmart/train.csv")
 test <- read.csv("data/walmart/test.csv")
 sample <- read.csv("data/walmart/sample_submission.csv")
+
 # TripType - a categorical id representing the type of shopping trip the customer made. TripType_999 is an "other" category.
 # VisitNumber - an id corresponding to a single trip by a single customer
 # Weekday - the weekday of the trip

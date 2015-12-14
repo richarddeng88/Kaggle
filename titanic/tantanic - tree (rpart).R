@@ -1,5 +1,7 @@
 train <- read.csv("data/titanic/train.csv")
 test <- read.csv("data/titanic/test.csv")
+genderclassmodel <- read.csv("data/titanic/genderclassmodel.csv")
+gendermodel <- read.csv("data/titanic/gendermodel.csv")
 
 table(train$Pclass)
 table(train$Sex)
