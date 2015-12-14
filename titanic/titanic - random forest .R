@@ -36,6 +36,7 @@ all_data <- train
         
         # there are a lot of NAs in "Age"
         test$Age[is.na(test$Age)] <- predict(age_model, test[is.na(test$Age),])
+
 # TRAIN RF MODEL
     library(randomForest)
     rf_model <- randomForest(as.factor(Survived)~Pclass + Sex + Age + SibSp + Parch + Fare + Embarked,
@@ -44,13 +45,15 @@ all_data <- train
                              ntree=1000)
     summary(rf_model)
     importance(rf_model)
-    
+    varImpPlot(rf_model)
     
     # prediction
-
     rf_pred <- predict(rf_model,test)
     
     #output for kaggle
     solution <- data.frame(PassengerID=test$PassengerId, Survived=rf_pred)
     write.csv(solution,file="kaggle/titanic/submission.csv",row.names = F)
+    
+# INCREASE PORFORMANCE
+    
     

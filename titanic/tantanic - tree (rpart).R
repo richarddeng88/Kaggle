@@ -6,6 +6,8 @@ gendermodel <- read.csv("data/titanic/gendermodel.csv")
 table(train$Pclass)
 table(train$Sex)
 cor(train$Pclass,train$Fare)
+plot(train$Pclass, train$Fare)
+pairs(train)
 
 # tree model
     library(rpart);library(rattle);library(rpart.plot)
