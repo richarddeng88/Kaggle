@@ -1,3 +1,4 @@
+library(caret)
 train <- all_data
 
 table(train$Pclass)
@@ -16,3 +17,12 @@ b <- training %>% group_by(Age) %>% summarize(mean(Survived))
 
 rpart.plot(tree_model)
 varImpPlot(rf_model)
+
+# train RF model using "caret" package
+    grid <- expand.grid(.mtry=c(2,3,4,5,6,7))
+    rf_model <- train(Survived~.,
+                      data=training,
+                      importance=T,
+                      method="rf")
+    rf_pred <- predict(rf_model, test)
+    
