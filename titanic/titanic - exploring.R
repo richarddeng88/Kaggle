@@ -36,3 +36,4 @@ varImpPlot(rf_model$finalModel)
     qda_pred <- predict(qda_model, test)
     solution <- data.frame(PassengerID=test$PassengerId, Survived=qda_pred)
     write.csv(solution,file="kaggle/titanic/submission.csv",row.names = F)
+    
