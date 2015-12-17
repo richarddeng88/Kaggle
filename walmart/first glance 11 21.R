@@ -11,26 +11,41 @@ sample <- read.csv("data/walmart/sample_submission.csv")
 # FinelineNumber - a more refined category for each of the products, created by Walmart
 
 # attributes of predictors
-    sapply(train, function(x){sum(is.na(x))}) ## check NAs
-    sapply(test, function(x){sum(is.na(x))}) ## check NAs
+    # check how many missing values.
+    sapply(train, function(x){sum(is.na(x))})
+    sapply(test, function(x){sum(is.na(x))}) 
     table(train$ScanCount)  # maybe a weekly grocery trep may buy more items. 
 
-    #
-    sapply(train, function(x) length(unique(x))) # check length of unique value of each variable
-    sapply(test, function(x) length(unique(x))) # check length of unique value of each variable
+    ## check length of unique value of each variable
+    sapply(train, function(x) length(unique(x))) 
+    sapply(test, function(x) length(unique(x))) 
+    
 # atrributes of response
     prop.table(table(train$TripType)) 
-    barplot(table(train$TripType))              # barplot response var
-    barplot(prop.table(table(train$TripType)))  # barplot response var
+    barplot(prop.table(table(train$TripType)))  # barplot response var, 39,40 account 30%
     
 ## classification problem : TREE, RF, QDA, 
 ## two variables have 4129 NAS; Response var looks like emblanced. 
-# 
+
+## feature engineering
+    # a new variable indication how many items bought a vist 
+    library(dplyr)
+    a <- unique(train$VisitNumber)
+    for (i in a){
+        train[train$VisitNumber==a,]$items <- dim(train[train$VisitNumber==a,])[1]
+    }
 
 
+    # it seems ucp and fineNumber are unrelevant, i take them out and solve NAs problem. 
+    train <- select(train, -Ucp, -FinelineNumber) 
+    test <- select(test, -Ucp, -FinelineNumber) 
+    
+# DATA SPLIT
+library(caret)
+intrain <- createDataPartition(train$TripType, p=0.8, list=F)
+training <- train[intrain,]; testing <- train[-intrain,]
 
-
-
+# TRAIN MODEL
 
 
 
