@@ -3,7 +3,7 @@ train <- read.csv("data/titanic/train.csv")
 test <- read.csv("data/titanic/test.csv")
 train$Survived <- as.factor(train$Survived)
 
-# ====================== DEAL WITH NAs ====================================================================
+# ============================= DEAL WITH NAs ====================================================================
     # we found out that there are 177 NAs in age variable and 2 in Embarked var. 
         head(train)
         sum(is.na(train))
@@ -41,7 +41,26 @@ train$Survived <- as.factor(train$Survived)
         
         
 ## =============================== FEATURE ENGINEERING =================================================
-## 
+## DEALING WITH AGE, transform it to "child", "adult" and "elder".
+        train$group <- "adult"
+        train$group[train$Age < 15] <- "child"
+        train$group[train$Age > 50] <- "elder"
+        #table
+        table(train$Survived, train$group)
+
+## CLASSIFYING FARE
+        train$Fare2 <- "30+"
+        train$Fare2[train$Fare < 10] <- "<10"
+        train$Fare2[train$Fare >=10 & train$Fare <20 ] <- "20-30"
+        train$Fare2[train$Fare >=20 & train$Fare < 30 ] <- "20-30"
+        #table
+        table(train$Survived, train$Fare2)
+
+## ADD A NEW VARIABLE - family
+        train$family <- train$SibSp + train$Parch
+        
+        
+## DEALING WITH cABIN VARIABLE. trasform it to differ levels and make it dummirable. 
         train$Cabin <- as.character(train$Cabin)
         for(i in 1:dim(train)[1]) {
             if (train$Cabin[i]== "") { train$Cabin[i] <- "None" } else {train$Cabin[i] <- substr(train$Cabin[i],1,1)}
@@ -53,45 +72,20 @@ train$Survived <- as.factor(train$Survived)
         }
         
         train[train$Cabin=="T",]$Cabin <- "None"
-## CREATE DUMMY VARIABLES
-        table(train$Cabin);table(test$Cabin)
-        dummies <- dummyVars(Pclass~Cabin+Sex+Embarked, data=train)
-        new <- data.frame(predict(dummies, newdata=train))
-        new_test <- data.frame(predict(dummies, newdata=test))
-        
-##
-        training <- cbind(train[,c(2,3,6,7,8,10)],new)
-        testing <- cbind(test, new_test)
-
-        # TRAIN RF MODEL AND EVALUATE
-        grid <- expand.grid(.mtry=c(2,3,4,5,6,7))
-        rf_model <- train(Survived~.,
-                          data=training,
-                          importance=T,
-                          tuneGrid =grid,
-                          method="rf")
-        rf_pred <- predict(rf_model, test)
-        solution <- data.frame(PassengerID=test$PassengerId, Survived=rf_pred)
-        write.csv(solution,file="kaggle/titanic/submission.csv",row.names = F)
-        
-        
-
-        # ensemble method - random forest 
-        rf_model <- randomForest(Survived~.,
-                                 data=training,
-                                 importance=T,
-                                 ntree=1000, mtry=5)
-        summary(rf_model)
-        importance(rf_model)
-        varImpPlot(rf_model)
-        rf_pred <- predict(rf_model, testing)
-        solution <- data.frame(PassengerID=test$PassengerId, Survived=rf_pred)
-        write.csv(solution,file="kaggle/titanic/submission.csv",row.names = F)
+ 
         
         
         
         
-        
-## devide data into one numeric and one categorical
-numeric_train <- cbind(Survived=train$Survived, train[,sapply(train, is.numeric)])
-category_train <- train[,!sapply(train, is.numeric)]
+               
+                #################### CREATE DUMMY VARIABLES  - a new idea#######################
+                        table(train$Cabin);table(test$Cabin)
+                        dummies <- dummyVars(Pclass~Cabin+Sex+Embarked, data=train)
+                        new <- data.frame(predict(dummies, newdata=train))
+                        new_test <- data.frame(predict(dummies, newdata=test))
+                        
+                        ##
+                        training <- cbind(train[,c(2,3,6,7,8,10)],new)
+                        testing <- cbind(test, new_test)
+                
+                
