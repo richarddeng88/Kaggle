@@ -72,6 +72,7 @@ train$Survived <- as.factor(train$Survived)
         }
         
         train[train$Cabin=="T",]$Cabin <- "None"
+
  
         
         
