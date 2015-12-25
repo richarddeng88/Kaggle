@@ -24,7 +24,7 @@ library(rpart);library(rattle);library(rpart.plot);library(party)
                 plot(ctree_model)
                 # prediction
                 ctree_pred <- predict(ctree_model, test)
-                #output for kaggle
+                # output for kaggle
                 solution <- data.frame(PassengerID=test$PassengerId, Survived=ctree_pred)
                 write.csv(solution,file="kaggle/titanic/submission.csv" ,row.names = F)
                 
@@ -35,8 +35,16 @@ library(rpart);library(rattle);library(rpart.plot);library(party)
                                  family = "binomial")
                 logit_model
                 summary(logit_model)
-                logit_pred <- predict(logit_model, train[1,c(3,5,13)],type="response")
-                table()
+                # prediction
+                logit_probs <- predict(logit_model,test,type="response")
+                logit_pred <- rep(0,dim(test)[1])
+                logit_pred[logit_probs>=0.5] <- 1
+                table(logit_pred)
+                # output for kaggle
+                solution <- data.frame(PassengerID=test$PassengerId, Survived=logit_pred)
+                write.csv(solution,file="kaggle/titanic/submission.csv" ,row.names = F)
+                
+
 
 
 
