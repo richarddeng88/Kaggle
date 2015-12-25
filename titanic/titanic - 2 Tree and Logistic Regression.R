@@ -29,7 +29,14 @@ library(rpart);library(rattle);library(rpart.plot);library(party)
                 write.csv(solution,file="kaggle/titanic/submission.csv" ,row.names = F)
                 
         # LOGISTIC REGRESSION
-                
+                logit_model <- glm(Survived~Pclass+Sex+group,
+                                 #+SibSp+Parch+Embarked+Fare+Cabin+Fare2+group, 
+                                 data = train,
+                                 family = "binomial")
+                logit_model
+                summary(log_model)
+                logit_pred <- predict(logit_model, train[1,c(3,5,13)],type="response")
+                table()
 
 
 

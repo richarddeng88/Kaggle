@@ -27,18 +27,18 @@ library(caret);library(dplyr)
 ## classification problem : TREE, RF, QDA, 
 ## two variables have 4129 NAS; Response var looks like emblanced. 
 
-## feature engineering
-    # a new variable indication how many items bought a vist 
-    library(dplyr)
-    a <- unique(train$VisitNumber)
-    for (i in a[63800:95764]){
-        train[train$VisitNumber==i,]$items <- dim(train[train$VisitNumber==i,])[1]
-    }
-    
-    b <- unique(test$VisitNumber)
-    for (i in b){
-        test[test$VisitNumber==i,]$items <- dim(test[test$VisitNumber==i,])[1]
-    }
+## ===================================FEATURE ENGINEERING =======================================================
+        # a new variable indication how many items bought a vist 
+            library(dplyr)
+            a <- unique(train$VisitNumber)
+            for (i in a[63800:95764]){
+                train[train$VisitNumber==i,]$items <- dim(train[train$VisitNumber==i,])[1]
+            }
+            
+            b <- unique(test$VisitNumber)
+            for (i in b){
+                test[test$VisitNumber==i,]$items <- dim(test[test$VisitNumber==i,])[1]
+            }
 
     # it seems ucp and fineNumber are unrelevant, i take them out and solve NAs problem. 
     clean_train <- select(train,-VisitNumber, -Upc, -FinelineNumber) 
@@ -58,6 +58,7 @@ library(caret);library(dplyr)
     plot(test_train$TripType, test_train$items, pch=20)
     e <- test_train %>% group_by(TripType) %>% summarize(mean=mean(items))
     plot(e$TripType, e$mean)
+
     
 # DATA SPLIT
 library(caret)

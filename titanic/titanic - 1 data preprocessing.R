@@ -3,6 +3,8 @@ train <- read.csv("data/titanic/train.csv")
 test <- read.csv("data/titanic/test.csv")
 train$Survived <- as.factor(train$Survived)
 #train$Survived <- factor(train$Survived, labels=c("Perished","Survived"),levels = c(0,1))
+train$Pclass <- as.factor(train$Pclass)
+test$Pclass <- as.factor(test$Pclass)
 
 # ============================= DEAL WITH NAs ====================================================================
     # we found out that there are 177 NAs in age variable and 2 in Embarked var. 
