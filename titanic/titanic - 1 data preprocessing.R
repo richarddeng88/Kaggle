@@ -2,6 +2,7 @@ library(rpart);library(rpart.plot);library(caret)
 train <- read.csv("data/titanic/train.csv")
 test <- read.csv("data/titanic/test.csv")
 train$Survived <- as.factor(train$Survived)
+#train$Survived <- factor(train$Survived, labels=c("Perished","Survived"),levels = c(0,1))
 
 # ============================= DEAL WITH NAs ====================================================================
     # we found out that there are 177 NAs in age variable and 2 in Embarked var. 
@@ -47,6 +48,7 @@ train$Survived <- as.factor(train$Survived)
         train$group[train$Age > 50] <- "elder"
         #table
         table(train$Survived, train$group)
+        train$group <- as.factor(train$group)
 
 ## CLASSIFYING FARE
         train$Fare2 <- "30+"
@@ -55,6 +57,7 @@ train$Survived <- as.factor(train$Survived)
         train$Fare2[train$Fare >=20 & train$Fare < 30 ] <- "20-30"
         #table
         table(train$Survived, train$Fare2)
+        train$Fare2 <- as.factor(train$Fare2)
 
 ## ADD A NEW VARIABLE - family
         train$family <- train$SibSp + train$Parch
@@ -65,14 +68,10 @@ train$Survived <- as.factor(train$Survived)
         for(i in 1:dim(train)[1]) {
             if (train$Cabin[i]== "") { train$Cabin[i] <- "None" } else {train$Cabin[i] <- substr(train$Cabin[i],1,1)}
         }
-
-        test$Cabin <- as.character(test$Cabin)
-        for(i in 1:dim(test)[1]) {
-            if (test$Cabin[i]== "") { test$Cabin[i] <- "None" } else {test$Cabin[i] <- substr(test$Cabin[i],1,1)}
-        }
         
         train[train$Cabin=="T",]$Cabin <- "None"
-
+        train$Cabin <- as.factor(train$Cabin)
+        
  
         
         
@@ -89,4 +88,29 @@ train$Survived <- as.factor(train$Survived)
                         training <- cbind(train[,c(2,3,6,7,8,10)],new)
                         testing <- cbind(test, new_test)
                 
+                
+        ## WROKING ON TEST DATASET=====================================================================================
+                ## DEALING WITH AGE, transform it to "child", "adult" and "elder".
+                test$group <- "adult"
+                test$group[test$Age < 15] <- "child"
+                test$group[test$Age > 50] <- "elder"
+                test$group <- as.factor(test$group)
+                
+                ## CLASSIFYING FARE
+                test$Fare2 <- "30+"
+                test$Fare2[test$Fare < 10] <- "<10"
+                test$Fare2[test$Fare >=10 & test$Fare <20 ] <- "20-30"
+                test$Fare2[test$Fare >=20 & test$Fare < 30 ] <- "20-30"
+                test$Fare2 <- as.factor(test$Fare2)
+                
+                ## ADD A NEW VARIABLE - family
+                test$family <- test$SibSp + test$Parch
+                
+                ## DEALING WITH cABIN VARIABLE. trasform it to differ levels and make it dummirable
+                test$Cabin <- as.character(test$Cabin)
+                for(i in 1:dim(test)[1]) {
+                        if (test$Cabin[i]== "") { test$Cabin[i] <- "None" } else {test$Cabin[i] <- substr(test$Cabin[i],1,1)}
+                }          
+                
+                test$Cabin <- as.factor(test$Cabin)
                 
