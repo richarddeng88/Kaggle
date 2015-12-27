@@ -25,9 +25,9 @@ library(randomForest);library(rattle);library(rpart.plot);library(caret)
                 solution <- data.frame(PassengerID=test$PassengerId, Survived=rf_pred)
                 write.csv(solution,file="kaggle/titanic/submission.csv",row.names = F)
         # train cforest using "party" package
-                cf_model <- cforest(Survived~Pclass+Sex+Age+SibSp+Parch+Embarked+Fare+Cabin,
+                cf_model <- cforest(Survived~Pclass+Sex+Age+SibSp+Parch+Embarked+Fare+Cabin+family+Fare2+group,
                                     data=train,
-                                    controls = cforest_unbiased(ntree=4000,mtry=2))
+                                    controls = cforest_unbiased(ntree=4000,mtry=4))
                 
                 cf_pred <- predict(cf_model, test,OOB=T, type="response")
                 solution <- data.frame(PassengerID=test$PassengerId, Survived=cf_pred)
