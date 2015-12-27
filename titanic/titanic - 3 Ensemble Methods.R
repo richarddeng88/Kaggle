@@ -1,9 +1,9 @@
 library(randomForest);library(rattle);library(rpart.plot);library(caret)
 
         # train RF model using "caret" package
-                grid <- expand.grid(.mtry=c(2,3,4,5,6,7,8,9,10))
+                grid <- expand.grid(.mtry=c(2,3,4,5,6,7))
                 ctrl <- trainControl(method= "cv", number = 10)
-                rf_model <- train(Survived~Pclass+Sex+Age+SibSp+Parch+Embarked+Fare+Cabin+family+Fare2+group,
+                rf_model <- train(Survived~Pclass+Sex+Age+SibSp+Embarked+Fare+family,
                                   data=train,
                                   method="rf",
                                   importance=T,
