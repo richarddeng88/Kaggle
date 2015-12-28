@@ -6,11 +6,15 @@ library(caret);
         # zero covariate
         nsv <- nearZeroVar(train, saveMetrics = T) 
         train1 <- train[,-which(nsv[,4]==1)]  # train1 <- train[,-nearZeroVar(train)]
-      
+        
         # REMOVE DESCREIPTIVE FEATURES. 
         
-        # CHECK CORRELLATION
+        # CHECK CORRELLATION. 
         
+        
+        
+        
+        # STANDERDIZE THE DATA.
         
         # CREATE NEW FEATURES.
         
@@ -19,5 +23,3 @@ library(caret);
         intrain <- createDataPartition(y=train$target, p=0.75, list = F)
         #intrain <- sample(dim(train)[1],9000)
         training <- train[intrain,]; validation <- train[-intrain,]
-        
-        
