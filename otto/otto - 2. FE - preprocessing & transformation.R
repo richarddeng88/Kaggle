@@ -10,9 +10,9 @@ library(caret);
         # REMOVE DESCREIPTIVE FEATURES. 
         
         # CHECK CORRELLATION. 
-        
-        
-        
+        M <- abs(cor(train[,2:93]))
+        diag(M) <- 0 # every variable has correlation 1 with itself. So i don't need to care the diag(M)
+        which(M>0.8, arr.ind = T)
         
         # STANDERDIZE THE DATA.
         
