@@ -2,7 +2,6 @@ library(caret); library(class)
 
 ## now, we have training and validation set. 
         # RF
-        
         rf_model <- randomForest(target~., 
                                  data= training[,-1], 
                                  ntree=100, 
@@ -20,15 +19,28 @@ library(caret); library(class)
         stand <- preProcess(training[,2:94], method = c("center","scale"))
         knn_training <- predict(stand, training)
         knn_validation <- predict(stand, validation)
-        
-        
-        knn_model <- knn(training[,c(-1,-95)], 
-                         validation[, c(-1,-95)],
-                         training$target,
+        knn_model <- knn(knn_training[,c(-1,-95)], 
+                         knn_validation[, c(-1,-95)],
+                         knn_training$target,
                          k=8,
                          prob=T)
         knn_pred <- knn_model
-        confusionMatrix(knn_pred, validation$target) # 0.7762
+        confusionMatrix(knn_pred, validation$target) # 0.7683
+        
+                # purning the parameter.
+                ctrl <- trainControl(method = "cv", number = 10) 
+                grid <- expand.grid(k=c(3,5,7,9,10,12,14,16,18))
+                knn_cv_model <- train(target~., 
+                                   data=training[,-1], 
+                                   method="knn", 
+                                   #preProcess=c("center","scale"),
+                                   tuneGrid = grid,
+                                   #tuneLength = 40,
+                                   trControl=ctrl) # need to set up different k values as i want
+        
+        
+        
+
         
         
         # LDA
