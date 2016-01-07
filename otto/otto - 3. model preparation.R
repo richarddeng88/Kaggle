@@ -10,6 +10,19 @@ library(caret); library(class)
         rf_pred <- predict(rf_model, validation[,-1])
         confusionMatrix(rf_pred, validation$target) # 0.8062
         
+                # purning the parameter.
+                ctrl <- trainControl(method = "cv", number = 10) 
+                grid <- expand.grid(k=c(4,6,7,8,9,10,12,14,16,18))
+                rf_cv_model <- train(target~., 
+                                      data=training[,-1], 
+                                      method="rf", 
+                                      #preProcess=c("center","scale"),
+                                      tuneGrid = grid,
+                                      #tuneLength = 40,
+                                      trControl=ctrl) # need to set up different k values as i want
+                rf_cv_pred <- predict(rf_cv_model, validation)
+                confusionMatrix(knn_cv_pred, knn_validation$target)  # 0.5449, i guess overfiting
+        
         # naive bayes
         
         
@@ -29,16 +42,16 @@ library(caret); library(class)
         
                 # purning the parameter.
                 ctrl <- trainControl(method = "cv", number = 10) 
-                grid <- expand.grid(k=c(3,5,7,9,10,12,14,16,18))
+                grid <- expand.grid(k=c(4,6,7,8,9,10,12,14,16,18))
                 knn_cv_model <- train(target~., 
-                                   data=training[,-1], 
+                                   data=knn_training[,-1], 
                                    method="knn", 
                                    #preProcess=c("center","scale"),
                                    tuneGrid = grid,
                                    #tuneLength = 40,
                                    trControl=ctrl) # need to set up different k values as i want
-        
-        
+                knn_cv_pred <- predict(knn_cv_model, knn_validation)
+                confusionMatrix(knn_cv_pred, knn_validation$target)  # 0.5449, i guess overfiting
         
 
         
