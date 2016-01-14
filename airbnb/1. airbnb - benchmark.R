@@ -1,1 +1,6 @@
-train <- read.csv 
+train <- read.csv("data/airbnb/train_users_2.csv")
+test <- read.csv("data/airbnb/test_users.csv")
+countries <- read.csv("data/airbnb/countries.csv")
+age <- read.csv("data/airbnb/age_gender_bkts.csv")
+sessions <- read.csv("data/airbnb/sessions.csv")
+sample <- read.csv("data/airbnb/sample_submission_NDF.csv")

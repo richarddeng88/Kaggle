@@ -51,7 +51,7 @@ library(caret); library(class)
                                    #tuneLength = 40,
                                    trControl=ctrl) # need to set up different k values as i want
                 knn_cv_pred <- predict(knn_cv_model, knn_validation)
-                confusionMatrix(knn_cv_pred, knn_validation$target)  # 0.5449, i guess overfiting
+                confusionMatrix(knn_cv_pred, knn_validation$target)  # 0.769, after scaling, 0.546 if not scaling
         
 
         
