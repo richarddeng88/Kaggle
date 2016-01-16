@@ -5,4 +5,9 @@ age <- read.csv("data/airbnb/age_gender_bkts.csv")
 sessions <- read.csv("data/airbnb/sessions.csv")
 sample <- read.csv("data/airbnb/sample_submission_NDF.csv")
 
-summary(train)
+
+# 1st glance
+unique(train$language)
+unique(train$country_destination)
+prop.table(table(train$country_destination))
+plot(table(train$country_destination))
