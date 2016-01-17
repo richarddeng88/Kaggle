@@ -44,7 +44,16 @@ library(caret); library(class);library(randomForest)
                          train$Cover_Type,
                          k=8,
                          prob=T)
+                # caret package
+                ctrl <- trainControl(method = "cv", number = 10)
+                grid <- expand.grid(k=c(4,6,8,10,12,14,16,18,20))
+                knn_model <- train(Cover_Type~., 
+                                   data=train[,-1],
+                                   method="knn",
+                                   tuneGrid = grid,
+                                   trControl = ctrl)
         
+        knn_pred <- predict(knn_model, test)        
         submission <- data.frame(Id=test$Id, Cover_Type= knn_pred)
         write.csv(submission, file="submission.csv",row.names = F)
         # the score is 0.61198  no.1396
