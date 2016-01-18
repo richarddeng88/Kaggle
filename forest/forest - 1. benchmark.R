@@ -28,8 +28,9 @@ pairs(train[,2:11])
 
 # TRAIN RF MODEL  -  BENCHMARK
         rf <- randomForest(Cover_Type~., 
-                           data= train[,-1], 
-                           ntree=500, 
+                           data= train[,c(2:11,56)], 
+                           ntree=100, 
+                           # mtry=53,
                            importance=TRUE)
         varImpPlot(rf)
         importance(rf, type=1)
@@ -42,4 +43,30 @@ pairs(train[,2:11])
         # benchmark score is 0.7076 no.1240      ntry =800
         
         
+# SPLIT THE DATA IN TO TRAINING AND VALIDATION
+        intrain <- createDataPartition(y=train$Cover_Type, p=0.7, list=F)
+        training <- train[intrain, ]; validation <- train[-intrain,]
+        rf_model <- randomForest(Cover_Type~., 
+                                 data= training[,c(-1)], 
+                                 ntree=100, 
+                                 # mtry=53,
+                                 importance=TRUE)
+        rf_pred <- predict(rf_model, validation)
+        confusionMatrix(validation$Cover_Type, rf_pred)
         
+        
+        
+        
+        
+        
+        # tunning parameter
+        control <- trainControl(method = "cv", number = 10)
+        grid <- expand.grid(.mtry=c(3:12))
+        rf_model <- train(Cover_Type~., 
+                          data=training,
+                          method="rf",
+                          tuneGrid=grid,
+                          trControl=control,
+                          importance=T)
+        rf_pred <- predict(rf_model, validation)
+        confusionMatrix(validation$Cover_Type, rf_pred)
