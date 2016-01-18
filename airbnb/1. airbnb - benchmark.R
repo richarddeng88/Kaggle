@@ -1,5 +1,5 @@
-library(rpart);library(rattle);library(rpart.plot);library(dplyr)
-train <- read.csv("data/airbnb/train_users_2.csv")
+library(rpart);library(rattle);library(rpart.plot);library(dplyr);library(randomForest)
+train <- read.csv("data/airbnb/train_users_2.csv",na.strings = "NA")
 test <- read.csv("data/airbnb/test_users.csv")
 countries <- read.csv("data/airbnb/countries.csv")
 age <- read.csv("data/airbnb/age_gender_bkts.csv")
@@ -23,8 +23,20 @@ search_time <- sessions %>% group_by(user_id) %>% summarize(total=mean(secs_elap
 
 
 # TRAIN RF MODEL  -  BENCHMARKE
-        bench_train <- train[,c(9,10,11,12,16)]
-        bench_test <- test[,c(9,10,11,12)]
+        bench_train <- train[,c(4,6,7,9,10,11,12,16)]
+        bench_test <- test[,c(4,6,7,9,10,11,12,16)]
+
+        rf_model <- randomForest(country_destination~.,
+                                 data=bench_train,
+                                 ntree=500,
+                                 importance = T)
+        
+        varImpPlot(rf_model)
+        rf_pred <- predict(rf_model, test)
+        
+
+
+
         sum(is.na(bench_train));sum(is.na(bench_test))
         tree_benchmark <- rpart(country_destination~., data=bench_train)
         
