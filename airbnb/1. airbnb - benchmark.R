@@ -7,20 +7,31 @@ sessions <- read.csv("data/airbnb/sessions.csv")
 sample <- read.csv("data/airbnb/sample_submission_NDF.csv")
 
 
-# 1st glance
+# 1st glance, exploratory analysis
 plot(table(train$language))
 unique(train$country_destination)
 prop.table(table(train$country_destination))
 plot(table(train$country_destination))
 
-sum(is.na(train))
-sapply(train, function(x){sum(is.na(x))})
-sum(is.na(test))
-sapply(test, function(x){sum(is.na(x))})
+ggplot(data=train, mapping = aes(x=date_account_created))
+
+# NAs
+sum(is.na(train)); sapply(train, function(x){sum(is.na(x))})
+sum(is.na(test)) ; sapply(test, function(x){sum(is.na(x))})
 
 # calculate the elipse time
 search_time <- sessions %>% group_by(user_id) %>% summarize(total=mean(secs_elapsed, na.rm=T))
+a <- sessions[sessions$user_id=="",]
+x <-dim(train)[1]
+x <- 100
+for (i in 1:x) {
+        if (train$id[i] %in% search_time$user_id) {
+                train$search_time <- search_time$total
+        } else train$search_time <- 0
+}
 
+# merger data
+merge(x=train, y=search_time, by.x=id, by.y=user_id)
 
 # TRAIN RF MODEL  -  BENCHMARKE
         bench_train <- train[,c(4,6,7,9,10,11,12,16)]

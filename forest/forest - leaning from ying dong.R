@@ -32,7 +32,12 @@ train$Cover_Type <- as.factor(train$Cover_Type)
         
 # 2. DATA PREPROCESSING
         # zero covariate soil 7 and 15 there is no value , i guess useless predictor.
-        
+        # zero covariate
+        nsv <- nearZeroVar(train, saveMetrics = T) 
+        train1 <- train[,-which(nsv[,4]==1)]  # train1 <- train[,-nearZeroVar(train)]
+        #if_equal_0 <- sapply(train[, which(nsv[,4]==1)], function(x){sum(x)})
+        if_equal_0 <- sapply(train[,1:54], function(x){mean(x)})
+        which(if_equal_0<0.05)
         
         
         
@@ -69,8 +74,18 @@ train$Cover_Type <- as.factor(train$Cover_Type)
         rf_pred <- predict(rf_model,test[,-1])
         submission <- data.frame(Id=test$Id, Cover_Type=rf_pred)
         write.csv(submission, file="submission.csv",row.names = F)
-        # score: 0.76931
+        # score: 0.76931   no. 430
         
         
-        
-        
+        # zero covariate
+        nsv <- nearZeroVar(train, saveMetrics = T) 
+        train1 <- train[,-which(nsv[,4]==1)]  # train1 <- train[,-nearZeroVar(train)]
+        rf_model <- randomForest(Cover_Type~., 
+                                 data= train1[,c(-1)], 
+                                 ntree=500,
+                                 importance=TRUE)
+        varImpPlot(rf_model)
+        rf_pred <- predict(rf_model,test[,-1])
+        submission <- data.frame(Id=test$Id, Cover_Type=rf_pred)
+        write.csv(submission, file="submission.csv",row.names = F)
+        # score: 0.76930 
