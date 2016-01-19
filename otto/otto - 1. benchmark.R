@@ -5,6 +5,13 @@ sample <- read.csv("data/otto/sampleSubmission.csv")
 
 # 1st glance
 prop.table(table(train$target))
+ggplot(train, aes(x=target)) + geom_bar(fill="lightblue",color="black")+labs(title="distribution of product categories")
+
+ggplot(train, aes(x=feat_34,y=feat_48, color=target)) + geom_point()
+
+# NAs
+    sapply(train, function(x){sum(is.na(x))})
+    sapply(test, function(x){sum(is.na(x))})
 
 submission <- data.frame(id=test$id, Class_1=NA, Class_2=NA, Class_3=NA, Class_4=NA, Class_5=NA, Class_6=NA, Class_7=NA, Class_8=NA, Class_9=NA)
 
@@ -20,10 +27,11 @@ submission <- data.frame(id=test$id, Class_1=NA, Class_2=NA, Class_3=NA, Class_4
         
         # PREDICTION AND OUTPUT
         submission[,2:10] <- (predict(rf, test[,-1], type="prob")+0.01)/1.09
-        rf_prob <- predict(rf, test[,-1], type="prob")
+        #rf_prob <- predict(rf, test[,-1], type="prob")
         rf_pred <- predict(rf,test[,-1])
         # submission[,2:10] <- predict(rf, test[,-1], type="prob")
         write.csv(submission, file="submission.csv",row.names = F)
+        # score 0.62142
 
 # ploting the important features
         p <- ggplot(featureImportance, aes(x=reorder(Feature, Importance), y=Importance)) +
