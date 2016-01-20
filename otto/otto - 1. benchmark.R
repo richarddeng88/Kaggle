@@ -4,7 +4,8 @@ test <- read.csv("data/otto/test.csv")
 sample <- read.csv("data/otto/sampleSubmission.csv")
 
 # 1st glance
-prop.table(table(train$target))
+# distribution of train target
+table(train$target)
 ggplot(train, aes(x=target)) + geom_bar(fill="lightblue",color="black")+labs(title="distribution of product categories")
 
 ggplot(train, aes(x=feat_34,y=feat_48, color=target)) + geom_point()
