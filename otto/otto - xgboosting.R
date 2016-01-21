@@ -23,7 +23,9 @@ train <- train[,-dim(train)[2]]
 
 for (i in 1:93){
         train[,i] <- as.numeric(train[,i])
+        test[,i] <- as.numeric(test[,i])
 }
+
 trainMatrix <- as.matrix(train)
 testMatrix <- as.matrix(test)
 
@@ -41,21 +43,26 @@ param <- list("objective" = "multi:softprob",
                         nfold = cv.nfold, nrounds = cv.nround)
 
 # train a 50 round model 
-        nround = 50
+        nround = 150
         bst = xgboost(param=param, data = trainMatrix, label = y, nrounds=nround)
 
 #
-        model <- xgb.dump(bst, with.stats = T)
-        model[1:10]
+                model <- xgb.dump(bst, with.stats = T)
+                model[1:10]
+                # Get the feature real names
+                names <- dimnames(trainMatrix)[[2]]        
+                # Compute feature importance matrix
+                importance_matrix <- xgb.importance(names, model = bst)
+                # Nice graph
+                xgb.plot.importance(importance_matrix[1:10,])
+                # tree graph
+                xgb.plot.tree(feature_names = names, model = bst, n_first_tree = 2)
         
-        # Get the feature real names
-        names <- dimnames(trainMatrix)[[2]]        
-        # Compute feature importance matrix
-        importance_matrix <- xgb.importance(names, model = bst)
-        # Nice graph
-        xgb.plot.importance(importance_matrix[1:10,])
-        
-        
-        
-        
-        
+        # prediction
+        xg_pred <- predict(bst, testMatrix)
+        a <- matrix(xg_pred,dim(test)[1],9, byrow=T)
+        submission <- data.frame(id=test$id, Class_1=NA, Class_2=NA, Class_3=NA, Class_4=NA, Class_5=NA, Class_6=NA, Class_7=NA, Class_8=NA, Class_9=NA)
+        submission[,2:10] <- data.frame(a)
+        write.csv(submission, file="submission.csv",row.names = F)
+        apply(submission[,2:10],1,sum)
+        # score 0.47328
