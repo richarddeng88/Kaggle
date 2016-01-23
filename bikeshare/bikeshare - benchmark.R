@@ -31,17 +31,17 @@ sample <- read.csv("data/bike/sample.csv")
         # transfor date to new variables. 
         train$datetime <- ymd_hms(train$datetime)
         train$weekday <- as.factor(weekdays(train$datetime))
-        train$year <- as.factor(year(train$datetime))
-        train$month <- as.factor(month(train$datetime))
-        train$hour <- as.factor(hour(train$datetime))
+        train$year <- year(train$datetime)
+        train$month <- month(train$datetime)
+        train$hour <- hour(train$datetime)
         train <- train[,-1]
         str(train)
         
         test$datetime <- ymd_hms(test$datetime)
         test$weekday <- as.factor(weekdays(test$datetime))
-        test$year <- as.factor(year(test$datetime))
-        test$month <- as.factor(month(test$datetime))
-        test$hour <- as.factor(hour(test$datetime))
+        test$year <-year(test$datetime)
+        test$month <- month(test$datetime)
+        test$hour <- hour(test$datetime)
         str(test)
         
         # ploting
@@ -52,7 +52,7 @@ sample <- read.csv("data/bike/sample.csv")
         b1 <- train %>% group_by(hour) %>% summarize(mean=mean(count), type="count")
         b2 <- train %>% group_by(hour) %>% summarize(mean=mean(registered), type="registered")
         b3 <- train %>% group_by(hour) %>% summarize(mean=mean(casual), type="casual")
-        b <- rbind(b1,b2,b3)
+        b <- rbind(b1,b2,b3);b$hour <- as.numeric(b$hour)
         ggplot(data=b, mapping = aes(x=hour, y=mean,color=type)) + geom_line()+labs(y="number of users", title="mean values")
 
 # benchmark -1
@@ -64,8 +64,15 @@ sample <- read.csv("data/bike/sample.csv")
         rf_pred <- predict(rf_model, test)
         submission <- data.frame(datetime=test$datetime, count=rf_pred)
         write.csv(submission, file = "submission.csv", row.names=FALSE)
+        
+        pred <- predict(rf_model, train)
+        plot(train$count,pred)
+        cor(train$count,pred)
         # score is 0.64535. it seems that i still need to consider the time factor. 
 
+        # consider into the time factor
+        
+        
 # benchmark -2 
 extractFeatures <- function(data) {
     features <- c("season",
@@ -119,15 +126,4 @@ extractFeatures <- function(data) {
     ggsave("2_feature_importance.png", p)
     
 # benchmark -3
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
